@@ -10,10 +10,10 @@ import retrofit2.http.GET
 
 
 interface WebService {
-    @GET("images/search?limit=10")
+    @GET("images/search?limit=100")
     suspend fun getCatById(): List<Cat>
 
-    @GET("images/search?limit=10&breed_ids=")
+    @GET("images/search?limit=100&breed_ids=")
     suspend fun searchByBreed(): List<Cat>
 }
 
