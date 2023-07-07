@@ -1,20 +1,21 @@
 package com.example.androidchallengecatapi.repository
 
-import com.example.androidchallengecatapi.data.model.Cat
+import com.example.androidchallengecatapi.data.model.CatResponse
 import com.example.androidchallengecatapi.utils.AppsConstants.API_KEY
 import com.example.androidchallengecatapi.utils.AppsConstants.BASE_URL
 import okhttp3.OkHttpClient
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import retrofit2.http.GET
+import retrofit2.http.Query
 
 
 interface WebService {
-    @GET("images/search?limit=10")
-    suspend fun getCatById(): List<Cat>
+    @GET("images/search?limit=20")
+    suspend fun getRandomCats(): List<CatResponse>
 
-    @GET("images/search?limit=10&breed_ids=")
-    suspend fun searchByBreed(): List<Cat>
+    @GET("images/search?limit=20")
+    suspend fun searchCatsByBreed(@Query("breed_ids") breedIds: String): List<CatResponse>
 }
 
 object RetrofitClient {

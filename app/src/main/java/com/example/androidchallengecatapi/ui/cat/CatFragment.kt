@@ -1,16 +1,14 @@
 package com.example.androidchallengecatapi.ui.cat
 
-
-import android.content.Context
 import android.os.Bundle
+import android.view.LayoutInflater
 import android.view.View
-import android.view.inputmethod.InputMethodManager
+import android.view.ViewGroup
 import androidx.appcompat.widget.SearchView
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
-import com.example.androidchallengecatapi.R
 import com.example.androidchallengecatapi.data.model.Cat
 import com.example.androidchallengecatapi.data.remote.CatDataSource
 import com.example.androidchallengecatapi.databinding.FragmentCatBinding
@@ -20,32 +18,28 @@ import com.example.androidchallengecatapi.repository.CatRepositoryImpl
 import com.example.androidchallengecatapi.repository.RetrofitClient
 import com.example.androidchallengecatapi.ui.adapters.CatAdapter
 
-class CatFragment : Fragment(R.layout.fragment_cat), CatAdapter.OnCatClickListener {
+class CatFragment : Fragment(), CatAdapter.OnCatClickListener {
 
     private var _binding: FragmentCatBinding? = null
     private val binding get() = _binding!!
-    private val viewModel by viewModels<CatViewModel> {
-        CatViewModelFactory(
-            CatRepositoryImpl(
-                CatDataSource(RetrofitClient.webService)
-            )
-        )
-    }
 
+    private val viewModel: CatViewModel by viewModels {
+        CatViewModelFactory(CatRepositoryImpl(CatDataSource(RetrofitClient.webService)))
+    }
     private lateinit var catAdapter: CatAdapter
 
-    private fun hideKeyboard() {
-        val imm =
-            requireContext().getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
-        imm.hideSoftInputFromWindow(view?.windowToken, 0)
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View {
+        _binding = FragmentCatBinding.inflate(inflater, container, false)
+        return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        _binding = FragmentCatBinding.bind(view)
-
         catAdapter = CatAdapter(this)
-
         binding.rvCatList.adapter = catAdapter
 
         viewModel.catList.observe(viewLifecycleOwner, Observer { cats ->
@@ -67,7 +61,6 @@ class CatFragment : Fragment(R.layout.fragment_cat), CatAdapter.OnCatClickListen
                 query?.let {
                     viewModel.searchCatsByBreed(query)
                 }
-                hideKeyboard()
                 return false
             }
 
@@ -87,3 +80,4 @@ class CatFragment : Fragment(R.layout.fragment_cat), CatAdapter.OnCatClickListen
         findNavController().navigate(action)
     }
 }
+

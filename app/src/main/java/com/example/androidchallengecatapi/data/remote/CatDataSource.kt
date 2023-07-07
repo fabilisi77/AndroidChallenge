@@ -5,9 +5,17 @@ import com.example.androidchallengecatapi.repository.WebService
 
 
 class CatDataSource(private val webService: WebService) {
+    suspend fun getRandomCats(): List<Cat> {
+        val catResponses = webService.getRandomCats()
+        return catResponses.map { catResponse ->
+            Cat(catResponse.id, catResponse.url)
+        }
+    }
 
-    suspend fun getCatById(): List<Cat> = webService.getCatById()
-
-    suspend fun searchByBreed(): List<Cat> = webService.searchByBreed()
-
+    suspend fun searchCatsByBreed(breedIds: String): List<Cat> {
+        val catResponses = webService.searchCatsByBreed(breedIds)
+        return catResponses.map { catResponse ->
+            Cat(catResponse.id, catResponse.url)
+        }
+    }
 }

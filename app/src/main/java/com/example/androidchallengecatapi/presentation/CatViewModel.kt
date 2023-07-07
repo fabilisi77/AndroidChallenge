@@ -7,9 +7,8 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
 import com.example.androidchallengecatapi.data.model.Cat
 import com.example.androidchallengecatapi.repository.CatRepository
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
+
 
 class CatViewModel(private val repo: CatRepository) : ViewModel() {
 
@@ -19,34 +18,27 @@ class CatViewModel(private val repo: CatRepository) : ViewModel() {
     private val _isLoading = MutableLiveData<Boolean>()
     val isLoading: LiveData<Boolean> get() = _isLoading
 
-    private val _errorMessage = MutableLiveData<String>()
-    val errorMessage: LiveData<String> get() = _errorMessage
-
     fun getRandomCats() {
         viewModelScope.launch {
             _isLoading.value = true
             try {
-                val cats = withContext(Dispatchers.IO) {
-                    repo.getCatById()
-                }
+                val cats = repo.getRandomCats()
                 _catList.value = cats
             } catch (e: Exception) {
-                _errorMessage.value = e.message
+                // Manejo de error
             }
             _isLoading.value = false
         }
     }
 
-    fun searchCatsByBreed(breedIds: String?) {
+    fun searchCatsByBreed(breedIds: String) {
         viewModelScope.launch {
             _isLoading.value = true
             try {
-                val cats = withContext(Dispatchers.IO) {
-                    repo.searchByBreed()
-                }
+                val cats = repo.searchCatsByBreed(breedIds)
                 _catList.value = cats
             } catch (e: Exception) {
-                _errorMessage.value = e.message
+                // Manejo de error
             }
             _isLoading.value = false
         }
@@ -55,8 +47,9 @@ class CatViewModel(private val repo: CatRepository) : ViewModel() {
 
 class CatViewModelFactory(private val repo: CatRepository) : ViewModelProvider.Factory {
     override fun <T : ViewModel> create(modelClass: Class<T>): T {
-        return modelClass.getConstructor(CatRepository::class.java).newInstance(repo)
+        if (modelClass.isAssignableFrom(CatViewModel::class.java)) {
+            return CatViewModel(repo) as T
+        }
+        throw IllegalArgumentException("Unknown ViewModel class")
     }
 }
-
-

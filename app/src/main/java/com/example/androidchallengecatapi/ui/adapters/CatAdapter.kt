@@ -17,8 +17,7 @@ class CatAdapter(private val itemClickListener: OnCatClickListener) :
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): CatViewHolder {
-        val binding =
-            ItemCatBinding.inflate(LayoutInflater.from(parent.context), parent, false)
+        val binding = ItemCatBinding.inflate(LayoutInflater.from(parent.context), parent, false)
         return CatViewHolder(binding)
     }
 
@@ -57,7 +56,6 @@ class CatAdapter(private val itemClickListener: OnCatClickListener) :
         }
     }
 }
-
 
 
 

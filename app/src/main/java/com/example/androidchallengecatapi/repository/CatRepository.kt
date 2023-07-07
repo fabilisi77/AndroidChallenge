@@ -3,6 +3,6 @@ package com.example.androidchallengecatapi.repository
 import com.example.androidchallengecatapi.data.model.Cat
 
 interface CatRepository {
-    suspend fun getCatById(): List<Cat>
-    suspend fun searchByBreed(): List<Cat>
+    suspend fun getRandomCats(): List<Cat>
+    suspend fun searchCatsByBreed(breedIds: String): List<Cat>
 }
