@@ -33,9 +33,7 @@ class CatViewModel(private val repo: CatRepository) : ViewModel() {
 
 class CatViewModelFactory(private val repo: CatRepository) : ViewModelProvider.Factory {
     override fun <T : ViewModel> create(modelClass: Class<T>): T {
-        if (modelClass.isAssignableFrom(CatViewModel::class.java)) {
-            return CatViewModel(repo) as T
-        }
-        throw IllegalArgumentException("Unknown ViewModel class")
+        return modelClass.getConstructor(CatRepository::class.java).newInstance(repo)
+
     }
 }
