@@ -1,16 +1,16 @@
 package com.example.androidchallengecatapi.presentation
 
-
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.liveData
+import androidx.lifecycle.viewModelScope
 import com.example.androidchallengecatapi.core.Resource
 import com.example.androidchallengecatapi.repository.CatRepository
 import kotlinx.coroutines.Dispatchers
 
 class CatViewModel(private val repo: CatRepository) : ViewModel() {
 
-    fun fetchRandomCats() = liveData(Dispatchers.IO) {
+    fun fetchRandomCats() = liveData(viewModelScope.coroutineContext + Dispatchers.Main) {
         emit(Resource.Loading())
         try {
             val cats = repo.getRandomCats()
@@ -20,7 +20,7 @@ class CatViewModel(private val repo: CatRepository) : ViewModel() {
         }
     }
 
-    fun fetchCatsByBreed(breedIds: String) = liveData(Dispatchers.IO) {
+    fun fetchCatsByBreed(breedIds: String) = liveData(viewModelScope.coroutineContext + Dispatchers.Main) {
         emit(Resource.Loading())
         try {
             val cats = repo.searchCatsByBreed(breedIds)
