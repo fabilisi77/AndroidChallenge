@@ -1,46 +1,32 @@
 package com.example.androidchallengecatapi.presentation
 
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
+
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
-import androidx.lifecycle.viewModelScope
-import com.example.androidchallengecatapi.data.model.Cat
+import androidx.lifecycle.liveData
+import com.example.androidchallengecatapi.core.Resource
 import com.example.androidchallengecatapi.repository.CatRepository
-import kotlinx.coroutines.launch
-
+import kotlinx.coroutines.Dispatchers
 
 class CatViewModel(private val repo: CatRepository) : ViewModel() {
 
-    private val _catList = MutableLiveData<List<Cat>>()
-    val catList: LiveData<List<Cat>> get() = _catList
-
-    private val _isLoading = MutableLiveData<Boolean>()
-    val isLoading: LiveData<Boolean> get() = _isLoading
-
-    fun getRandomCats() {
-        viewModelScope.launch {
-            _isLoading.value = true
-            try {
-                val cats = repo.getRandomCats()
-                _catList.value = cats
-            } catch (e: Exception) {
-                // Manejo de error
-            }
-            _isLoading.value = false
+    fun fetchRandomCats() = liveData(Dispatchers.IO) {
+        emit(Resource.Loading())
+        try {
+            val cats = repo.getRandomCats()
+            emitSource(liveData { emit(Resource.Success(cats)) })
+        } catch (e: Exception) {
+            emit(Resource.Failure(e))
         }
     }
 
-    fun searchCatsByBreed(breedIds: String) {
-        viewModelScope.launch {
-            _isLoading.value = true
-            try {
-                val cats = repo.searchCatsByBreed(breedIds)
-                _catList.value = cats
-            } catch (e: Exception) {
-                // Manejo de error
-            }
-            _isLoading.value = false
+    fun fetchCatsByBreed(breedIds: String) = liveData(Dispatchers.IO) {
+        emit(Resource.Loading())
+        try {
+            val cats = repo.searchCatsByBreed(breedIds)
+            emitSource(liveData { emit(Resource.Success(cats)) })
+        } catch (e: Exception) {
+            emit(Resource.Failure(e))
         }
     }
 }

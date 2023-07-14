@@ -6,6 +6,7 @@ import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
+import com.example.androidchallengecatapi.core.BaseViewHolder
 import com.example.androidchallengecatapi.data.model.Cat
 import com.example.androidchallengecatapi.databinding.ItemCatBinding
 
@@ -27,11 +28,11 @@ class CatAdapter(private val itemClickListener: OnCatClickListener) :
     }
 
     inner class CatViewHolder(private val binding: ItemCatBinding) :
-        RecyclerView.ViewHolder(binding.root) {
+        BaseViewHolder<Cat>(binding.root) {
 
         init {
             binding.root.setOnClickListener {
-                val position = adapterPosition
+                val position = bindingAdapterPosition
                 if (position != RecyclerView.NO_POSITION) {
                     val cat = getItem(position)
                     itemClickListener.onCatClick(cat)
@@ -39,9 +40,9 @@ class CatAdapter(private val itemClickListener: OnCatClickListener) :
             }
         }
 
-        fun bind(cat: Cat) {
+        override fun bind(item: Cat) {
             Glide.with(binding.root)
-                .load(cat.url)
+                .load(item.url)
                 .into(binding.imgCat)
         }
     }
@@ -56,6 +57,3 @@ class CatAdapter(private val itemClickListener: OnCatClickListener) :
         }
     }
 }
-
-
-
